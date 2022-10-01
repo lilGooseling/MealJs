@@ -401,36 +401,59 @@ window.addEventListener('DOMContentLoaded', () => {
             //form.append(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
+            /*const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');*/
 
-            request.setRequestHeader('Content-type', 'application/json');
+
+            //request.setRequestHeader('Content-type', 'application/json');
+
             const formData = new FormData(form);
+
 
             const object = {};
             formData.forEach(function (value, key) {
                 object[key] = value;
             });
+            //const json = JSON.stringify(object);
 
-            const json = JSON.stringify(object);
 
-            request.send(json);
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
+            });
 
-            request.addEventListener('load', () => {
+
+
+            //request.send(json);
+
+            /*request.addEventListener('load', () => {
                 if (request.status === 200) {
                     console.log(request.response);
                     //statusMessage.textContent = message.success;
                     showThanksModal(message.success);
-                    form.reset();
+                    form.reset();*/
                     /*setTimeout( () => {
                         statusMessage.remove();
                     }, 2000);*/
-                    statusMessage.remove();
+                    /*statusMessage.remove();
                 } else {
                     //statusMessage.textContent = message.failure;
                     showThanksModal(message.failure);
                 }
-            });
+            });*/
         });
 
     }
@@ -458,6 +481,8 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }, 4000);
     }
+
+
 
 
 
